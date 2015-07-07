@@ -29,17 +29,21 @@ module.exports = function (babel) {
         if (htmlTags.indexOf(elementName) > -1) {
           return
         }
+        // console.info('[index.js] ', 'Looking at ', elementName);
 
-        var returnStatement = this;
+        var siblingStatement = this;
         while (1) {
-          returnStatement = returnStatement.parentPath;
-          // ExpressionStatement: React.render() in entry.jsx
-          // ReturnStatement: in render methods
-          if (returnStatement.type === 'ReturnStatement' || returnStatement.type === 'ExpressionStatement' || returnStatement.type === 'ExportDefaultDeclaration') {
+          siblingStatement = siblingStatement.parentPath;
+          // console.info('[index.js] ', '---- sibling: ', siblingStatement);
+
+          var validSiblingsForInsertion = ['ReturnStatement', 'ExpressionStatement', 'ExportDefaultDeclaration', 'BlockStatement'];
+
+          if (validSiblingsForInsertion.indexOf(siblingStatement.type) > -1) {
             break;
           }
         }
-        returnStatement.insertBefore(consoleAssertNotUndefined(elementName));
+
+        siblingStatement.insertBefore(consoleAssertNotUndefined(elementName));
       }
     }
   });
