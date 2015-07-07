@@ -33,7 +33,10 @@ module.exports = function (babel) {
         var returnStatement = this;
         while (1) {
           returnStatement = returnStatement.parentPath;
-          if (returnStatement.type !== 'JSXElement') {
+          console.info('[index.js] ', returnStatement.type );
+          // ExpressionStatement: React.render() in entry.jsx
+          // ReturnStatement: in render methods
+          if (returnStatement.type === 'ReturnStatement' || returnStatement.type === 'ExpressionStatement' || returnStatement.type === 'ExportDefaultDeclaration') {
             break;
           }
         }
